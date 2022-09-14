@@ -1,15 +1,13 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
-console.log(galleryItems);
-
 const galleryContainer = document.querySelector('.gallery');
-const itemsMarkup = createGalleryItemsMarkup(galleryItems);
+const itemsMarkup = galleryItems.map(createGalleryItemsMarkup).join('');
 
-galleryContainer.insertAdjacentHTML('beforeend', itemsMarkup);
+galleryContainer.addEventListener('click', onGalleryContainerClick);
+galleryContainer.insertAdjacentHTML('afterbegin', itemsMarkup);
 
-function createGalleryItemsMarkup (galleryItems) {
-    return galleryItems.map(({preview, original, description}) => {
+function createGalleryItemsMarkup({preview, original, description}) {
     return `<div class="gallery__item">
     <a class="gallery__link" href="${original}">
     <img
@@ -20,18 +18,14 @@ function createGalleryItemsMarkup (galleryItems) {
     />
     </a>
     </div>`;
-    }).join('');
-}
-console.log(itemsMarkup);
-
-
-galleryContainer.addEventListener('click', onGalleryContainerClick);
+};
+// console.log(itemsMarkup);
 
 function onGalleryContainerClick(evt) {
     evt.praventDefault();
-    if (evt.target.nodeName !== 'IMG') {
-        return;
-    }
+
+    if (evt.target.nodeName !== 'IMG') return;
+
     const instance = basicLightbox.create(`
     <div class="modal">
         <img class="modal__image"
@@ -42,7 +36,7 @@ function onGalleryContainerClick(evt) {
     {
         onShow: instance => {
             window.addEventListener('keydown', onEscKeyPress);
-            instance.element().querySelector('img').onClick = instance.close
+            instance.element().querySelector('img').onclick = instance.close
         },
         onClose: instance => {
             window.removeEventListener('keydown', onEscKeyPress);
