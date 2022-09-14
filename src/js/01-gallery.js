@@ -2,12 +2,14 @@ import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
 const galleryContainer = document.querySelector('.gallery');
-const itemsMarkup = galleryItems.map(createGalleryItemsMarkup).join('');
+const itemsMarkup = createGalleryItemsMarkup(galleryItems);
 
 galleryContainer.addEventListener('click', onGalleryContainerClick);
-galleryContainer.insertAdjacentHTML('afterbegin', itemsMarkup);
+galleryContainer.insertAdjacentHTML('beforeend', itemsMarkup);
 
-function createGalleryItemsMarkup({preview, original, description}) {
+
+function createGalleryItemsMarkup (galleryItems) {
+    return galleryItems.map(({preview, original, description}) => {
     return `<div class="gallery__item">
     <a class="gallery__link" href="${original}">
     <img
@@ -18,20 +20,18 @@ function createGalleryItemsMarkup({preview, original, description}) {
     />
     </a>
     </div>`;
-};
-// console.log(itemsMarkup);
+    }).join('');
+}
 
 function onGalleryContainerClick(evt) {
-    evt.praventDefault();
+    evt.preventDefault();
 
     if (evt.target.nodeName !== 'IMG') return;
 
     const instance = basicLightbox.create(`
-    <div class="modal">
-        <img class="modal__image"
+        <img 
         src="${evt.target.dataset.source}"
         />
-    </div>
     `,
     {
         onShow: instance => {
@@ -48,7 +48,7 @@ function onGalleryContainerClick(evt) {
         if (evt.code === 'Escape') {
             instance.close();
         }
-    }
+    };
+
     instance.show();
 };
-
